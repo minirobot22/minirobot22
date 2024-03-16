@@ -23,23 +23,19 @@ description: >- # used by seo meta and the atom feed
 
 # Fill in the protocol & hostname for your site.
 # e.g. 'https://username.github.io', note that it does not end with a '/'.
-<<<<<<< HEAD
-url: "minirobot22.github.io"
-=======
-url: "minirobot22.github.io"
->>>>>>> 7b726e7018ea368afb65e357261f47a804ef4029
+url: "https://minirobot22.github.io"
 
 github:
   username: github_username # change to your github username
 
 twitter:
-  username: mrrobot # change to your twitter username
+  username: twitter_username # change to your twitter username
 
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: Osama
-  email: e.osamaradwan@gmail.com # change to your email address
+  name: your_full_name
+  email: example@domain.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
     - https://twitter.com/username # change to your twitter homepage
