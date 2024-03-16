@@ -28,8 +28,11 @@ url: "https://minirobot22.github.io"
 github:
   username: MiniRobot22 # change to your github username
 
-twitter:
-  username: __ # change to your twitter username
+#twitter:
+#  username: __ # change to your twitter username
+
+linkedin:
+  username: osama-mustafa # change to your twitter username
 
 social:
   # Change to your full name.
