@@ -2,8 +2,8 @@
 title: [Uncovering New Techniques through solving "UnpackMe" Challenge]
 date: 2024-03-16 00:00:00 +0800
 categories: [Digital Forensics]
-tags: [dfir,ir,investigation]     # TAG names should always be lowercase
-img_path: /assets/images/spotted/
+tags: [dfir,ir,malware analysis]     # TAG names should always be lowercase
+img_path: /assets/images/unpackme/
 ---
 
 
@@ -22,7 +22,8 @@ Along the way, we will learn various techniques and work arounds to tackle some 
 First of all, I`d like to examine my sample using basic static analysis, throwing the sample on Pestudio, DIE for quick triage.
 Will not spend too much time in this phase as the sample seems to be packed, no visible strings, entropy seems to be high which indicates some degree of packing.
 
-[1]
+[1]([1].Entropy.png)
+_Entropy_
 
 We saw VirtualAlloc as one of the API calls being imported from the imports address table of the sample, so,
 Load the sample in x32dbg, and let`s simply start by adding a breakpoint on VirtualAlloc
