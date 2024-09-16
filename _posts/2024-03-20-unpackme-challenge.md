@@ -22,7 +22,7 @@ Along the way, we will learn various techniques and work arounds to tackle some 
 First of all, I`d like to examine my sample using basic static analysis, throwing the sample on Pestudio, DIE for quick triage.
 Will not spend too much time in this phase as the sample seems to be packed, no visible strings, entropy seems to be high which indicates some degree of packing.
 
-[1]([1].Entropy.png)
+[Entropy]([1].Entropy.png)
 _Entropy_
 
 We saw VirtualAlloc as one of the API calls being imported from the imports address table of the sample, so,
