@@ -21,7 +21,7 @@ First of all, I`d like to examine my sample using basic static analysis, throwin
 
 Will not spend too much time in this phase as the sample seems to be packed, no visible strings, entropy seems to be high which indicates some degree of packing.
 
-[Entropy](Entropy.png)
+[Entropy](/assets/images/unpackme/Entropy.png)
 _Entropy_
 
 We saw VirtualAlloc as one of the API calls being imported from the imports address table of the sample, so,
