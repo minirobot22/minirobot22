@@ -3,7 +3,6 @@ title: [Uncovering New Techniques through solving "UnpackMe" Challenge]
 date: 2024-09-16 00:00:00 +0800
 categories: [Digital Forensics]
 tags: [dfir,ir,malware analysis]     # TAG names should always be lowercase
-img_path: /assets/images/unpackme/
 ---
 
 
