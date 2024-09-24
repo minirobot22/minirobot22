@@ -1,28 +1,34 @@
 ---
 title: [Uncovering New Techniques through solving "UnpackMe" Challenge]
-date: 2024-03-16 00:00:00 +0800
+date: 2024-09-16 00:00:00 +0800
 categories: [Digital Forensics]
 tags: [dfir,ir,malware analysis]     # TAG names should always be lowercase
 img_path: /assets/images/unpackme/
 ---
 
 
-
 As a malware analyst, we received a sample 
-Often times as a malware analyst, I receive vague file samples and get asked to analyze them. What I mean by vague is that they either unknown to most Public threat intelligence platforms or they do exist with low/high detection rate but with generic detection names. Those are mostly hueristix detections which.. 
+Often times as a malware analyst, I receive vague file samples and get asked to analyze them. What I mean by vague is that they either unknown to most Public threat intelligence platforms or they do exist with low/high detection rate but with generic detection names. Those are mostly hueristix detections which..
+
 In all cases, I usually perform the analysis with the following goals in mind:
-. Determine if the sample is actually doing something harmful, that is true or false positive.
-. The second most important thing to be concerned about is the malware capabilities & the risk associated with it
+* Determine if the sample is actually doing something harmful, that is true or false positive.
+* The second most important thing to be concerned about is the malware capabilities & the risk associated with it
 
 In our current scenario, we are mostly going to uncover & highlight some of the main capabilities of the sample and answering the challenge questions as we progress.
 Along the way, we will learn various techniques and work arounds to tackle some of the challenges encountered that hindered our dynamic analysis of the malware.
+
 First of all, I`d like to examine my sample using basic static analysis, throwing the sample on Pestudio, DIE for quick triage.
+
 Will not spend too much time in this phase as the sample seems to be packed, no visible strings, entropy seems to be high which indicates some degree of packing.
+
 [Entropy]([1].Entropy.png)
 _Entropy_
+
 We saw VirtualAlloc as one of the API calls being imported from the imports address table of the sample, so,
 Load the sample in x32dbg, and let`s simply start by adding a breakpoint on VirtualAlloc
+
 [2]
+
 After we run the program, we hit our breakpoint
 [3]
 Continue until we return back from the system dlls (kernal32,etc), and observe the address returned in EAX
