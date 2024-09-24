@@ -15,13 +15,13 @@ In all cases, I usually perform the analysis with the following goals in mind:
 * The second most important thing to be concerned about is the malware capabilities & the risk associated with it
 
 In our current scenario, we are mostly going to uncover & highlight some of the main capabilities of the sample and answering the challenge questions as we progress.
-Along the way, we will learn various techniques and work arounds to tackle some of the challenges encountered that hindered our dynamic analysis of the malware.
+Along the way, we will learn various techniques and work arounds to tackle some of the challenges encountered that hindered our dynamic analysis of the malware.s
 
 First of all, I`d like to examine my sample using basic static analysis, throwing the sample on Pestudio, DIE for quick triage.
 
 Will not spend too much time in this phase as the sample seems to be packed, no visible strings, entropy seems to be high which indicates some degree of packing.
 
-[Entropy]([1].Entropy.png)
+[Entropy](Entropy.png)
 _Entropy_
 
 We saw VirtualAlloc as one of the API calls being imported from the imports address table of the sample, so,
