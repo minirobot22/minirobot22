@@ -195,27 +195,202 @@ So, we have to come up with a different approach to emulate this on our local ne
 MALWARE C2 EMULATION
 -----------------------------------------
 
-So far, we`ve understood how the malware uses RC4 encryption to decrypt its C2 communications, and we have also seen that the base64 string () was actually the telegram C2 domain after decoding and decrypting it. In order to continue debugging, we have to alter the code a bit and replace this base64 string with our own that would resemble our own C2 on a local network.
-To do that, let`s setup an http server on our localhost, prepare similar C2 page by copying the telegram html code to our page, and add the missing html strings that the malware would expect to retrieve as below.
+So far, we have understood how the malware uses RC4 encryption to decrypt its C2 communications, and we have also seen that the base64 string (qSVdAbi/K2pP9eTPjNld5MgaAL+bQsyox4MDv0iVTuA=) was actually the telegram C2 domain after decoding and decrypting it. In order to continue debugging, we have to alter the code a bit and replace this base64 string with our own, which would resemble our own C2 on a local network.
+To do that, let`s setup an http server on our localhost, prepare similar C2 page by copying the telegram html code to our new page, and add the missing HTML strings that the malware would expect to retrieve.
 
-[23]
+I have added a simple string for testing, Mine would be saved and hosted at localhost/telegram.html
 
-Mine would be saved and hosted at localhost/telegram.html
+
+![Local Modified Copy of Telegram Page](/assets/images/unpackme/23.0.emulated_the_telegram_page_on_our_local_server_and_added_the_expected_response_string.png)
+_Local Modified Copy of Telegram Page_
+
+
 knowing the RC4 key, we can assemble our base64 with the help of CyberChef as below
-[23-0000-CyberChef]
 
-Now, let's open the malware file with hex editor and search for the base64 string (qSVdAbi/K2pP9eTPjNld5MgaAL+bQsyox4MDv0iVTuA=), our goal is to replace that portion with our own base64 so that after malware decodes it, we get our telegram.html.
-[23.00-Photo with HexEditor]
-Write-click, then choose paste write and save the file.
-Let`s test it by going to the instruction () and continue debugging, we should see our telegram page being resolved. 
-[pic]
+![CyberChef Base64](/assets/images/unpackme/23-0000modifying_the_telegram_c2_for_emulation.png)
+_CyberChef Base64_
+
+Now, let's edit our malware file with a hex editor and search for the base64 string (qSVdAbi/K2pP9eTPjNld5MgaAL+bQsyox4MDv0iVTuA=), our goal is to replace that portion with our own base64 so that after malware decodes it, we get our own telegram.html page.
+
+![Malware with HexEditor](/assets/images/unpackme/23.00-HexEditor.png)
+_Malware with HexEditor_
+
+
+After highlighting the reqiured string, Write-click, then choose paste write and save the file.
+
+Let`s test it by going to the RC4 Decryption instruction (*7F6) and continue debugging, we should see our telegram page being resolved. 
+
+![Local Telegram Page](/assets/images/unpackme/pic.png)
+_Local Telegram Page_
+
 Now, if we continue debugging from where we left off, we should jump at the block after the HTTP request, and our embedded string should appear as shown below
-[23.1]
-Next, if we step over a few instruction, we would start to see the string being filtered.
-[23.2]
-If we look closer after the function that extracts the string, we would see two calls to the same function (renamed filter_out here). In the first call, the value 5 is being pushed into the stack before the function call, and value 6 in the second function call, which corresponds to filtering out the first 5 characters of the strings, and the last 6 characters respectively.
-[23.3]
-Here is the code inside the function
-[23.4]
 
-Now, let
+![Modified String](/assets/images/unpackme/23.1.laterom-string.png)
+_Modified String_
+
+Next, if we step over a few instruction, we would start to see the string being filtered.
+
+![Filtered String](/assets/images/unpackme/23.1.laterom-string.png)
+_Filtered String_
+
+
+If we look closer after the function that extracts the string, we would see two calls to the same function (renamed filter_out here). In the first call, the value 5 is being pushed into the stack before the function call, and value 6 in the second function call, which corresponds to filtering out the first 5 characters from the strings, and the last 6 characters respectively.
+
+![Filtered String Function](/assets/images/unpackme/23.3.After_Extracting_Value_it_gets_filtered_Twice_beginning_and_end.png)
+_Filtered String Function_
+
+Here is the code inside the function
+
+![Filtered String Function](/assets/images/unpackme/23.4.Inside_the_first_filter_out_functions.png)
+_Filtered String Function_
+
+Moving on, after our string was filtered, we notice another calls to both base64 decoding & RC4 decryption funcions with a reference to one of the hardcoded base64 strings shown earlier.
+
+![2nd RC4 Decryptian to get the main C2](/assets/images/unpackme/23.5.2nd-RC4-Decryption-of-C2.png)
+_2nd RC4 Decryptian to get the main C2_
+
+
+We know that RaccoonStealer uses the middle stage we saw earlier (telegram channel) to retrieve its main C2 domain from the string that was missing in our case.
+
+In the screenshot above, the RC4 Decryptian function (RC4 Decrypt) is used to decrypt our retrieved and filtered string using the referenced hardcoded base64 string as the RC4 key and the resultant output should be the malware main C2.
+
+
+obviously,  our test string currenly does not make sense to the malware opertion. So, we can simulate the operation by reversing the process, similar to what we have done with the telegram domain. Given the new RC4 key, we can asssume a C2 domain hosted in our local server (localhost/dump.php), encrypt it with the RC4 Key (6af7fae138b9752d1d76736dcb534c9d) and produce a base64 sting that can be replaced by our test string in our telegram HTML page.
+
+![producing a main C2 in base64](/assets/images/unpackme/This_time_we_will_use_the_6af_key_instead_for_the_2nd_C2_comm.png)
+_2nd RC4 Decryptian to get the main C2_
+
+Now, this generated base64 will act as the main C2, that will be replaced with our old string, remember we have to pad our string with 5 characters at the beginning, 6 at the end, so that when it gets fitlered, we get the correct domain.
+
+![Main C2 Base64 String](/assets/images/unpackme/24.Modifed_the_string_for_the_2nd_c2_to_dump_the_request_to_our_local_server.png)
+_Main C2 Base64 String_
+
+
+let`s puase for a moment and understand how this stealer works and how it usually communicates to its C2.
+
+
+RacconStealer C2 Operations
+-----------------------------
+We can understand the C2 operations from various samples that exist on public sandboxes like any.run.
+
+![C2 Operation](/assets/images/unpackme/24.8-C2-Operations.png)
+_C2 Operation_
+
+RacconStealer operations usually works by following the below sequence:
+
+1. POST Request to its main C2 server (localhost/dump.php in our case) with identification paramters in the body (botID, configID, etc).
+
+2. The server replies with important malware configuration including a URL for the malware to download additional DLLs required for its stealing operations.
+
+
+![Malware Config with the URL](/assets/images/unpackme/24.1.Server-Reply-with-config.png)
+_Malware Config with the URL_
+
+3. The malware Download/Request the required DLLs (legitimate DLLs) and continue by collecting host information based on its config, finally, exfiltrate all data to the C2 server.
+
+We could use a proxy to capture the malware request to the server and observe the payload, in our case, we prepared a PHP (duip.php) page that will dump the request to a file on disk.
+
+A very handy php script that can perfrom this can be found here
+
+https://gist.github.com/magnetikonline/650e30e485c0f91f2f40
+
+Now, if we return back to our x32dbg and continue after the RC4 Decrypt function of the main C2 (duip.php), few instructions later we hit the first POST request to the server.
+
+![POST Request](/assets/images/unpackme/24.999-2nd-post-duip.png)
+_POST Request_
+
+The dumped request is shown below, The payload contians the Bot-ID and Machine ID ecrypted with the same RC4 key.
+
+![First Request dumped](/assets/images/unpackme/23.6-verify-thepost-reuqest-being-dumped.png)
+_First Request dumped_
+
+
+looking closer at the script (duip.php), it returns the string "Done" which is not expected by the malware, this will cuase the malware to stop and exit later on when it tries to check the server response. 
+
+![Return Value](/assets/images/unpackme/23.return-value.png)
+_Return Value_
+
+
+After the below section which checks the return values, malware exists.
+
+![Checking Configuration](/assets/images/unpackme/23.7-check-config.png)
+_Checking Configuration_
+
+To fix this, we need to edit the response wihthin the script, and provide the malware with an expected payload response (we got a fake response from the same sandbox sample shown earlier).
+
+
+[pic of the response from sanbox]
+
+
+![Replacing string with our payload](/assets/images/unpackme/23.9.duip-script-edited.png)
+_Replacing string with our payload_
+
+
+As mentioned, after decoding this payload with the RC4 Key, it will contain several different DLLs to Download to the infected host. Those DLLs would then be placed in the AppData\LocalLow location under the user profile.
+
+![Malware Config with the URL](/assets/images/unpackme/24.1.Server-Reply-with-config.png)
+_Malware Config with the URL_
+
+![Payload decoded from X32dbg](/assets/images/unpackme/24.999999-decoded.png)
+_Payload decoded from X32dbg_
+
+
+Since we don`t have the correct URL to download the required DLLs and we are emulating the stealer on our own network
+we obtained the files from different available RaccoonStealer sample found on any.run sandbox. 
+
+![DLLs Zipped](/assets/images/unpackme/24.9-Download-DLLs.png)
+_DLLs Zipped_
+
+Then, we placed the files in the location where the malware expects to find them, that is under locallow directory.
+
+![Files dropped in LocalLow folder](/assets/images/unpackme/23.8-drops-to-locallow.png)
+_Files dropped in LocalLow folder_
+
+Those are legitmate third-party DLLs required by the malware to gather information about the infected machine, some of the DLLs includes softokn3.dll
+, sqlite3.dll, nss3.dll, nssdbm3.dll and others.
+
+
+DLLs were placed inside LocalLow\rer as below
+
+[DLLs pic]
+
+
+At this point, the malware would perform the bulk of its stealing functionality, including stealing passwords, credit card information, browser cookies, history, etc.
+
+As an example, sqlite3.dll is utilized to perfrom SQL commands to steal information from browsers of the infected machine.
+
+![sqlite3.dll](/assets/images/unpackme/5000.2sqlite3.png)
+_sqlite3.dll_
+
+
+continue debugging with X32dbg, the malware would successfully dump a file named machineonfo.txt  under locallow direcroty, this file would contain machnine information including the RaccoonStealer version number.
+
+![Machineinfo.txt](/assets/images/unpackme/50000000.3_machineinfo.txt.png)
+_Machineinfo.txt_
+
+
+Turning our attention to registry key function calls, if we search for openRegKey we get multiple calls, focusing on the function highlited below
+
+
+![Looking for RegOpenKey](/assets/images/unpackme/30-Function-Call-to-openregkey.png)
+_Looking for RegOpenKey_
+
+navigating to that function call, we can immeditaly observe a common registry key used to check installed software running on the host
+
+![Installed Software Key](/assets/images/unpackme/30.1.the-registry-key-uninstall.png)
+_Installed Software Key_
+
+Malware commonly use the API call (GdipSaveImageToFile) to save an image to a file, so, examining this section of code, we can tell that it is used to peform scree capture from the infected host
+
+![GdipSaveImageToFile](/assets/images/unpackme/39-The-Function-respnsible-with-capturing-screenshots.png)
+_GdipSaveImageToFile_
+
+Checking this API Call cross references, we can obtain the main function address
+
+![screencapture address](/assets/images/unpackme/9000-screencapture.png)
+_screencapture address_
+
+Finally, The malware removes all its traces by executing the following command, which can be found with many instances of the stealer online
+
+![Malware Deletion](/assets/images/unpackme/6000-COMMAND-TO-DELETE-ITSELF.png)
+_Malware Deletion_
