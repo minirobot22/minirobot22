@@ -6,7 +6,7 @@ tags: [unpackme,ir,malware analysis]     # TAG names should always be lowercase
 ---
 
 
-As a malware analyst, we received an unknown piece of malware and our task is to dissect its components, understand its operational mechanics, and uncover its functionalities.
+As a malware analyst, we received an unknown piece of malware ([CyberDefender UnpackMe](https://cyberdefenders.org/blueteam-ctf-challenges/unpackme/)) and our task is to dissect its components, understand its operational mechanics, and uncover its functionalities.
 
 Often, as a malware analyst, I receive vague file samples and get asked to analyze them. What I mean by vague is that they either unknown to most Public threat intelligence platforms or they do exist with low/high detection rate often labeled with generic detection names. Those are mostly hueristic detections which rely on behavioral patterns or characteristics rather than specific signatures.
 
@@ -303,7 +303,7 @@ We could use a proxy to capture the malware request to the server and observe th
 
 A very handy php script that can perfrom this can be found here
 
-```C++
+```bash
 https://gist.github.com/magnetikonline/650e30e485c0f91f2f40
 ```
 
