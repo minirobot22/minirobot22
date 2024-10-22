@@ -40,7 +40,7 @@ social:
     # The first element serves as the copyright owner's link
     - https://www.linkedin.com/in/osama-mustafa
     # - https://twitter.com/username # change to your twitter homepage
-    - https://github.com/minirobot22 # change to your github homepage
+    - https://www.linkedin.com/in/osama-mustafa # change to your github homepage
     # Uncomment below to add more social links
     - https://www.facebook.com/minismsm
 
@@ -66,7 +66,7 @@ goatcounter:
 #     light  - Use the light color scheme
 #     dark   - Use the dark color scheme
 #
-theme_mode: # [light | dark]
+theme_mode: dark
 
 # The CDN endpoint for images.
 # Notice that once it is assigned, the CDN url
